@@ -55,6 +55,7 @@ class Stack {
 		/* Local Members */
 		void addState(State); //Add a state to the top of the stack.
 		void popState(); //Pop the state at the top of the stack.
+        void executeStack(); //Execute the current states of the stack.
 
 		/* Debug Members */
 		void printStack(); //Print the stack.
@@ -95,6 +96,30 @@ void Stack::printStack() {
 }
 
 /**
+ * @desc Execute the current states on the stack and pop them as they're completed.
+ */
+void Stack::executeStack() {
+    for (auto &state : this->stack) {
+        switch (state.getType()) {
+            case StateType::state0:
+                std::cout << "Executing state0" << std::endl;
+                break;
+            case StateType::state1:
+                std::cout << "Executing state1" << std::endl;
+                break;
+            case StateType::state2:
+                std::cout << "Executing state2" << std::endl;
+                break;
+            case StateType::state3:
+                std::cout << "Executing state3" << std::endl;
+                break;
+        }
+    
+        this->popState();
+    }
+}
+
+/**
  * @desc The main function.
  */
 int main() {
@@ -106,6 +131,10 @@ int main() {
 	}
 
 	stack.printStack(); //Print the contents of the stack.
+
+    stack.executeStack();
+
+    stack.printStack(); //After executing the states check the stack to see if they've been completed.
 
 	return 0;
 }

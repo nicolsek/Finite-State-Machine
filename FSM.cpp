@@ -1,17 +1,68 @@
 #include <iostream>
+#include <string>
 #include <vector>
+
+
+/* Simulating A Vending Machine! */
+
+/* Vending Machine States --
+ * Ready
+ * Depositing Food Item
+ * Reading Currency
+ * Defective Currency :(
+ * Being Shaken
+ */
 
 //States for the state creation.
 enum StateType {
-	undefined, //If the state is undefined it will default to 0.
+    Ready,
+    Deposit,
+    Reading,
+    Invalid,
+    Shaken,
 
-	state0,
-	state1,
-	state2,
-	state3,
-
-	final, //Final state to iterate through.
 };
+
+//Acceptable commands to give the communcations bus as keywords.
+std::string InstKeywords [4] = {"Deposit", "Retrieve", "deposit", "retrieve"}; 
+
+
+/**
+ * @desc An implementation of a communication bus for a vending machine.
+ */
+class ComBus {
+    public:
+        /* Public Constructor */
+        ComBus();
+
+        /* Local Members */
+        void sendInstruct(std::string); //Send an instruction to be parsed by the com bus which will then invoke states.
+};
+
+/**
+ * @desc It parses an instruction sent and will invoke the functions needed.
+ * @param {const*} inst the instruction to be parsed.
+ */
+void ComBus::sendInstruct(std::string inst) {
+    /** Keywords to parse
+     * Deposit [Amount of money in relation to 1 being a whole dollar and .1 being a dime]
+     * Retrieve [Letter + Number]
+     */
+
+    std::string command;
+
+    for (auto &keyword : InstKeywords) {
+        std::string::size_type n = inst.find(keyword); //<--- Size of string if found
+
+        if (n != std::string::npos) {
+            std::cout << inst.substr(n, keyword.length()) << std::endl; 
+        }
+    }
+}
+
+ComBus::ComBus() {
+
+}
 
 /**
  * @desc A single state for the stack.
@@ -26,7 +77,7 @@ class State {
 
 	private:
 		StateType stateType; //The type of state this is.
-};
+};;
 
 /**
  * @desc The public constructor for the state.
@@ -100,20 +151,9 @@ void Stack::printStack() {
  */
 void Stack::executeStack() {
     for (auto &state : this->stack) {
-        switch (state.getType()) {
-            case StateType::state0:
-                std::cout << "Executing state0" << std::endl;
-                break;
-            case StateType::state1:
-                std::cout << "Executing state1" << std::endl;
-                break;
-            case StateType::state2:
-                std::cout << "Executing state2" << std::endl;
-                break;
-            case StateType::state3:
-                std::cout << "Executing state3" << std::endl;
-                break;
-        }
+//        switch (state.getType()) {
+//        
+//        }
     
         this->popState();
     }
@@ -123,18 +163,16 @@ void Stack::executeStack() {
  * @desc The main function.
  */
 int main() {
-	Stack stack;
+	Stack stack; //<-- The stack being implemented.
+    ComBus combus; //<-- The combus 
 
-	for (int stateType = state0; stateType != StateType::final; ++stateType) { //Get the first state and increase every state until done.
-		State state = State(StateType(stateType)); //Create the new state to add.
-		stack.addState(state); //Add that state to the stack.
-	}
 
-	stack.printStack(); //Print the contents of the stack.
+    for(;;) { //Main running loop.
+        std::string instruction;
 
-    stack.executeStack();
-
-    stack.printStack(); //After executing the states check the stack to see if they've been completed.
+        std::cin >> instruction;
+        combus.sendInstruct(instruction);
+    }
 
 	return 0;
 }
